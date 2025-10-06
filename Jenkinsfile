@@ -51,7 +51,7 @@ pipeline {
 
                       gcloud auth configure-docker --quiet
 
-                      docker build -t gcr.io/${GCP_PROJECT}/bot:latest .
+                      docker build --cache-from gcr.io/${GCP_PROJECT}/bot:latest -t gcr.io/${GCP_PROJECT}/bot:latest .
 
                       docker push gcr.io/${GCP_PROJECT}/bot:latest 
 
@@ -61,7 +61,28 @@ pipeline {
                 }
             }
         }
-    }
+        stage('Deploy to cloud run') {
+            steps {
+                withCredentials([file(credentialsId :'gcp-key',variable :'GOOGLE_APPLICATION_CREDENTIALS')]){
+                   script{
+                      echo 'Deploy to cloud run....'
+                      sh '''
+                      export PATH=$PATH:${GCLOUD_PATH}
+
+                      gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+                      gcloud config set project ${GCP_PROJECT}
+
+                      gcloud run deploy bot
+
+                      '''
+
+                    }
+                }
+            }
+        }
+
+    }   
 
 
 }

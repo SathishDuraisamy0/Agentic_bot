@@ -5,7 +5,6 @@ langgraph
 openai
 faiss-cpu
 tavily-python
-wikipedia
 pyyaml
 requests
 python-dotenv
