@@ -1,0 +1,9 @@
+venv
+.env
+Chatbot.egg-info
+logs
+env
+
+
+
+

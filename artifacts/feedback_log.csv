@@ -1,0 +1,14 @@
+timestamp,source,rating,comment,query
+2025-10-05T17:44:30.897166,RAG,2,n,who is elon mask
+2025-10-05T17:52:28.757989,Tavily,5,h,Tell me about Albert Einstein
+2025-10-05T17:52:54.100727,GitHub,5,h,Find code for PII masking
+2025-10-05T17:53:33.966881,RAG,6,gh,Summarize the policy for system engineers
+2025-10-05T17:53:58.414134,Weather,h,hj,Show me weather updates
+2025-10-05T17:54:33.629179,Weather,5,hj,Is it raining in Whitefield?
+2025-10-05T17:54:49.748796,Tavily,5,hj,Search the internet for OpenAI
+2025-10-05T18:24:24.835892,RAG,4,n,who is elon musk
+2025-10-05T18:33:51.756939,Tavily,5,thanks,who is elon musk?
+2025-10-05T18:35:19.455584,Weather,5,thanks,what about bangalore whether now?
+2025-10-05T18:36:20.134232,GitHub,5,thanks,i want top chatbot codes ?
+2025-10-05T21:37:10.392504,Tavily,5,nice,who is actor vijay?
+2025-10-06T10:38:13.794140,Tavily,4,nothing,what is worldline
