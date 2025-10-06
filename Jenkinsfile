@@ -73,8 +73,11 @@ pipeline {
 
                       gcloud config set project ${GCP_PROJECT}
 
-                      gcloud run deploy bot
-
+                      gcloud run deploy bot \
+                       --image gcr.io/${GCP_PROJECT}/bot:latest \
+                       --platform managed \
+                       --region asia-south1 \
+                       --allow-unauthenticated 
                       '''
 
                     }
