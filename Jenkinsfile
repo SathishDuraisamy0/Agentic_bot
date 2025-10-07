@@ -79,7 +79,8 @@ pipeline {
                        --region asia-south1 \
                        --allow-unauthenticated 
                       gcloud run services update bot \
-                       --timeout=600 \
+                       --memory=1Gi \
+                       --timeout=800 \
                        --region=asia-south1
                       '''
 
