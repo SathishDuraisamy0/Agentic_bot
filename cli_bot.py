@@ -1,25 +1,44 @@
-import asyncio
-import sys
+
+"""
+Log Summarization & Insights Bot CLI
+------------------------------------
+A lightweight command-line client that connects to your Cloud Run FastAPI service.
+URL: https://bot-650010057363.asia-south1.run.app
+"""
+
+import requests
 import time
-from src.logger import get_logger
-from src.chatbot import get_answer
+import sys
+import os
 
-logger = get_logger(__name__)
-
-AUTO_CLOSE_TIMEOUT = 240  
+# -------------------------------
+# CONFIGURATION
+# -------------------------------
+BASE_URL = "https://bot-650010057363.asia-south1.run.app"
+AUTO_CLOSE_TIMEOUT = 240     # auto-close after 4 minutes
 QUIT_WORDS = {"exit", "quit", "bye", "close", "end"}
 
+
+# HEADERS = {"x-api-key": API_KEY}
+HEADERS = {}
+
+# -------------------------------
+# MAIN CHAT LOOP
+# -------------------------------
 def main():
-    logger.info("🤖CLI Chatbot started.")
-    print("Log Summarization & Insights Bot CLI started.")
+    print("=" * 70)
+    print("🤖  Log Summarization & Insights Bot (Cloud Run Edition)")
+    print("Connected to:", BASE_URL)
+    print("Type your query below, or type 'exit' to quit.")
+    print("=" * 70)
+
     last_activity = time.time()
 
     try:
         while True:
-            # Auto-close if idle > 4 minutes
+            # Auto-close after timeout
             if time.time() - last_activity > AUTO_CLOSE_TIMEOUT:
                 print("\n⏰ Session closed automatically after 4 minutes of inactivity.")
-                logger.info("Auto-closed after inactivity (4 min).")
                 break
 
             query = input("User: ").strip()
@@ -27,35 +46,40 @@ def main():
                 continue
             last_activity = time.time()
 
-            # Exit confirmation
             if query.lower() in QUIT_WORDS:
                 confirm = input("Do you really want to close the chat? (yes/no): ").strip().lower()
                 if confirm in {"y", "yes"}:
-                    logger.info("Session ended by user confirmation.")
                     print("\n🙏 Thank you for using Log Summarization & Insights Bot!")
                     break
                 else:
-                    print("Alright, continuing the session...\n")
+                    print("Okay, continuing...\n")
                     continue
 
+            # Send query to Cloud Run API
             try:
-                print("🤖 Thinking...")
-                response = get_answer(query)
-                print(f"Bot: {response}\n")
-                logger.info(f"Processed query: {query[:60]}")
-                
-            except Exception as e:
-                print("❌ Error while processing query.")
-                logger.error(f"Error: {e}")
+                print("🤖 Thinking...\n")
+                res = requests.get(f"{BASE_URL}/chat", params={"query": query}, headers=HEADERS, timeout=120)
+
+                if res.status_code == 200:
+                    data = res.json()
+                    response = data.get("response", "No response received.")
+                    print(f"Bot: {response}\n")
+
+                else:
+                    print(f"❌ Server returned {res.status_code}: {res.text}\n")
+
+            except requests.exceptions.RequestException as e:
+                print(f"❌ Network error: {e}\n")
 
     except KeyboardInterrupt:
-        print("\nInterrupted. Closing session gracefully...")
-        logger.warning("Keyboard interrupt detected. Session closed.")
+        print("\n🧩 Interrupted. Closing session gracefully...")
 
     finally:
-        print("\n Session closed. Goodbye!")
-        logger.info("CLI chatbot terminated cleanly.")
+        print("\nSession closed. Goodbye!")
         sys.exit(0)
 
+# -------------------------------
+# ENTRY POINT
+# -------------------------------
 if __name__ == "__main__":
     main()

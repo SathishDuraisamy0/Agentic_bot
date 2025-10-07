@@ -63,7 +63,12 @@ pipeline {
         }
         stage('Deploy to cloud run') {
             steps {
-                withCredentials([file(credentialsId :'gcp-key',variable :'GOOGLE_APPLICATION_CREDENTIALS')]){
+                withCredentials([
+                    file(credentialsId :'gcp-key',variable :'GOOGLE_APPLICATION_CREDENTIALS'),
+                    string(credentialsId: 'GROQ_API_KEY', variable: 'GROQ_API_KEY'),
+                    string(credentialsId: 'TAVILY_API_KEY', variable: 'TAVILY_API_KEY'),
+                    string(credentialsId: 'WEATHER_API_KEY', variable: 'WEATHER_API_KEY')
+                    ]){
                    script{
                       echo 'Deploy to cloud run....'
                       sh '''
@@ -81,7 +86,8 @@ pipeline {
                       gcloud run services update bot \
                        --memory=2Gi \
                        --timeout=800 \
-                       --region=asia-south1
+                       --region=asia-south1 \
+                       --set-env-vars "GROQ_API_KEY=$GROQ_API_KEY,TAVILY_API_KEY=$TAVILY_API_KEY,WEATHER_API_KEY=$WEATHER_API_KEY"
                       '''
 
                     }
